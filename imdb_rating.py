@@ -6,18 +6,22 @@ def getRatingAndNoOfUsers(mov_name,mov_url):
 	url = 'http://www.imdb.com' + mov_url
 	r = requests.get(url)
 	soup = BeautifulSoup(r.text,'html.parser')
-	rating = soup.find("div",{"class":"titlePageSprite star-box-giga-star"}).text
-	item = soup.find("div",{"class","star-box-details"}).find_all('a')
-	no_of_users_rated = item[0].contents[1].text
-	print mov_name, rating , no_of_users_rated
+	try:
+		rating = soup.find("div",{"class":"titlePageSprite star-box-giga-star"}).text
+		item = soup.find("div",{"class","star-box-details"}).find_all('a')
+		no_of_users_rated = item[0].contents[1].text
+		print mov_name, rating , no_of_users_rated
+	except:
+		print mov_name, "***** Not rated *****"
 
 
 movielist = []
 
 def getMovieNames():
-	path = '/Users/gansagar/Desktop/backup/movies'
+	#path = '/Users/gansagar/Desktop/backup/movies'
+	path = '/Volumes/MUDIT/Movies/'
 	dirs = os.listdir(path)
-	uwords = ['240p','360p','480p','720p','1080p','rip','x264','bluray']
+	uwords = ['240p','360p','480p','720p','1080p','rip','x264','h264','bluray','dvd','xvid','cd','dual','audio','hindi','eng','mb','limited']  #words not of use in movie name
 	#fileext = ['.mp4','.avi','.mkv']
 	fnames = []
 	for fname in dirs:
@@ -32,7 +36,7 @@ def getMovieNames():
 		else:
 			fnames.append(fname[:-4]) #removing extension
 			#print fname[:-4]  
-	#print fnames
+	print fnames
 	for fname in fnames:
 		for uword in uwords:
 			idx = fname.find(uword)
@@ -40,6 +44,7 @@ def getMovieNames():
 			if idx == -1:
 				continue
 			else:
+				idx = idx - 1
 				while idx>=0:
 					if fname[idx]>='a' and fname[idx]<='z':
 						idx = idx - 1
@@ -48,7 +53,7 @@ def getMovieNames():
 					# 	break
 					else:
 						break
-				fname = fname[:idx]
+				fname = fname[:idx+1]
 			
 		idx1 = fname.find('[')
 		if idx1 != -1: 
@@ -67,37 +72,59 @@ def getMovieNames():
 			#print "################",strg
 			if not strg.isdigit():
 				fname = fname[:idx1] + fname[idx2+1:]
+		fname = fname.replace('.',' ')
 		movielist.append(fname)
-	#print movielist
+	print movielist
+
+def _init_():
+	getMovieNames()
+	for movie_name in movielist:
+		base_url = 'http://www.imdb.com/find?q='
+		url = base_url + movie_name + '&s=all'
+		#print url
+		r = requests.get(url)
+
+		soup = BeautifulSoup(r.text,'html.parser')
+
+		print movie_name
+		try:
+			mov_list = soup.find_all("table",{"class":"findList"})
+
+			# print mov_list
+			details = mov_list[0].find_all("td",{"class":"result_text"})
+			#print details ,'\n'
+
+			link = details[0].contents[1].get('href')
+			mov_name = details[0].text
+			# print mov_name.encode('utf-8'),link,'\n'
+			getRatingAndNoOfUsers(mov_name.encode('utf-8'),link)
+		except:
+			print movie_name,"!!!!**********!!!"
+			pass
 
 
-getMovieNames()
 
-for movie_name in movielist:
+
+def test():
+	movie_name = 'crazy heart (2010)'
 	base_url = 'http://www.imdb.com/find?q='
-	#movie_name = ' crazy heart (2010)'
 	url = base_url + movie_name + '&s=all'
-	#print url
+	print url
 	r = requests.get(url)
 
 	soup = BeautifulSoup(r.text,'html.parser')
 
-	try:
-		mov_list = soup.find_all("table",{"class":"findList"})
+	print movie_name
+	mov_list = soup.find_all("table",{"class":"findList"})
 
-		# print mov_list
-		details = mov_list[0].find_all("td",{"class":"result_text"})
-		#print details ,'\n'
+	print mov_list
+	details = mov_list[0].find_all("td",{"class":"result_text"})
+	print details ,'\n'
 
-		link = details[0].contents[1].get('href')
-		mov_name = details[0].text
-		# print mov_name,link,'\n'
-		getRatingAndNoOfUsers(mov_name,link)
-	except:
-		pass
+	link = details[0].contents[1].get('href')
+	mov_name = details[0].text
+	print mov_name.encode('utf-8'),link,'\n'
+	getRatingAndNoOfUsers(mov_name.encode('utf-8'),link)
 
-
-
-
-
-
+#test()
+_init_()
