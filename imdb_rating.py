@@ -1,6 +1,9 @@
 from bs4 import BeautifulSoup
 import requests
 import os
+import sys
+
+
 
 def getRatingAndNoOfUsers(mov_name,mov_url):
 	url = 'http://www.imdb.com' + mov_url
@@ -16,9 +19,7 @@ def getRatingAndNoOfUsers(mov_name,mov_url):
 
 movielist = []
 
-def getMovieNames():
-	#path = '/Users/gansagar/Desktop/backup/movies'
-	path = '/Volumes/MUDIT/Movies/'
+def getMovieNames(path):
 	dirs = os.listdir(path)
 	uwords = ['240p','360p','480p','720p','1080p','rip','x264','h264','bluray','dvd','xvid','cd','dual','audio','hindi','eng','mb','limited']  #words not of use in movie name
 	#fileext = ['.mp4','.avi','.mkv']
@@ -76,7 +77,9 @@ def getMovieNames():
 	#print movielist
 
 def _init_():
-	getMovieNames()
+	path = '/Users/gansagar/Desktop/backup/movies/'
+	getMovieNames(path)
+	sys.stdout = open(path+'movies rating.txt', "w")
 	print "############# Movie #############","############# Rating #############" , "############# No of Users Rated #############"
 	for movie_name in movielist:
 		base_url = 'http://www.imdb.com/find?q='
@@ -104,7 +107,7 @@ def _init_():
 
 
 def test():
-	movie_name = 'crazy heart (2010)'
+	movie_name = 'spy'
 	base_url = 'http://www.imdb.com/find?q='
 	url = base_url + movie_name + '&s=all'
 	print url
