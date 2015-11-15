@@ -14,7 +14,6 @@ def getRatingAndNoOfUsers(mov_name,mov_url):
 	except:
 		print mov_name, "***** Not rated *****"
 
-
 movielist = []
 
 def getMovieNames():
@@ -86,7 +85,7 @@ def _init_():
 
 		soup = BeautifulSoup(r.text,'html.parser')
 
-		print movie_name
+		#print movie_name
 		try:
 			mov_list = soup.find_all("table",{"class":"findList"})
 
