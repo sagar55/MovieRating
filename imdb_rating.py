@@ -3,8 +3,6 @@ import requests
 import os
 import sys
 
-
-
 def getRatingAndNoOfUsers(mov_name,mov_url):
 	url = 'http://www.imdb.com' + mov_url
 	r = requests.get(url)
