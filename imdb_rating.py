@@ -10,9 +10,9 @@ def getRatingAndNoOfUsers(mov_name,mov_url):
 		rating = soup.find("div",{"class":"titlePageSprite star-box-giga-star"}).text
 		item = soup.find("div",{"class","star-box-details"}).find_all('a')
 		no_of_users_rated = item[0].contents[1].text
-		print mov_name, rating , no_of_users_rated
+		print "#####", mov_name,"#####", "#####",rating ,"#####","#####", no_of_users_rated,"#####"
 	except:
-		print mov_name, "***** Not rated *****"
+		print "#####",mov_name,"#####", "***** Not rated *****"
 
 movielist = []
 
@@ -35,7 +35,7 @@ def getMovieNames():
 		else:
 			fnames.append(fname[:-4]) #removing extension
 			#print fname[:-4]  
-	print fnames
+	#print fnames
 	for fname in fnames:
 		for uword in uwords:
 			idx = fname.find(uword)
@@ -73,10 +73,11 @@ def getMovieNames():
 				fname = fname[:idx1] + fname[idx2+1:]
 		fname = fname.replace('.',' ')
 		movielist.append(fname)
-	print movielist
+	#print movielist
 
 def _init_():
 	getMovieNames()
+	print "############# Movie #############","############# Rating #############" , "############# No of Users Rated #############"
 	for movie_name in movielist:
 		base_url = 'http://www.imdb.com/find?q='
 		url = base_url + movie_name + '&s=all'
@@ -98,10 +99,8 @@ def _init_():
 			# print mov_name.encode('utf-8'),link,'\n'
 			getRatingAndNoOfUsers(mov_name.encode('utf-8'),link)
 		except:
-			print movie_name,"!!!!**********!!!"
+			print "#####",movie_name,"#####","!!!!**********!!!"
 			pass
-
-
 
 
 def test():
